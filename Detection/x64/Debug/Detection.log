@@ -1,0 +1,273 @@
+﻿  main.cpp
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(115): warning C4101: “newg”: 未引用的局部变量
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(115): warning C4101: “newr”: 未引用的局部变量
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(405): warning C4305: “参数”: 从“double”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(471): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(473): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(474): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(580): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(582): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(583): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(785): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=uchar
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(873): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=uchar
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(994): warning C4244: “=”: 从“_Tp”转换到“int”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1003): warning C4244: “=”: 从“_Tp”转换到“int”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1105): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1107): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1108): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1119): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1162): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1164): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1165): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1695): warning C4267: “参数”: 从“size_t”转换到“const _Ty”，可能丢失数据
+          with
+          [
+              _Ty=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1777): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1875): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(1876): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2106): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2111): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2115): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2116): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2120): warning C4305: “参数”: 从“double”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2124): warning C4305: “参数”: 从“double”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2125): warning C4305: “参数”: 从“double”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2173): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2175): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2176): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2187): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2222): warning C4305: “参数”: 从“double”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2297): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2299): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2300): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2410): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=uchar
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2500): warning C4305: “参数”: 从“int”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2509): warning C4305: “参数”: 从“int”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2512): warning C4305: “参数”: 从“double”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2515): warning C4305: “参数”: 从“int”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2518): warning C4305: “参数”: 从“int”到“bool”截断
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2584): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2586): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2587): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(2641): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=uchar
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3009): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3011): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3012): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3023): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3060): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3062): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3063): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3151): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=uchar
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3237): warning C4244: “=”: 从“_Tp”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+          and
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3238): warning C4244: “=”: 从“_Tp”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+          and
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3241): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3243): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3245): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3266): warning C4244: “=”: 从“_Tp”转换到“int”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3360): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3362): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3363): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3451): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=uchar
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3705): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3750): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3781): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3782): warning C4244: “初始化”: 从“_Tp”转换到“float”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3949): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3950): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3951): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(3952): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4424): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4425): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4464): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4434): warning C4101: “isArea_2”: 未引用的局部变量
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4571): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4576): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4577): warning C4244: “=”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=float
+          ]
+d:\postgraduate\09_project\01_image\01_code\fog_sx\vs_marke\detection\main.cpp(4649): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+  Detection.vcxproj -> D:\Postgraduate\09_project\01_image\01_code\FOG_SX\VS_Marke\x64\Debug\Detection.exe
