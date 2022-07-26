@@ -2256,6 +2256,7 @@ bool lack_line(Mat white_yiwu, Mat ceguang, Mat Mask_MY, Mat* mresult, string *c
 	Mat elementTest_Level = getStructuringElement(MORPH_RECT, Size(1, 11));
 	morphologyEx(imageBinary_Level_line, imageBinary_Level_line, MORPH_CLOSE, elementTest_Level);
 	morphologyEx(imageBinary_Level_line, imageBinary_Level_line, MORPH_OPEN, elementTest_Level);
+	imageBinary_Level_line(Rect(imageBinary.cols - 120, 500, 120, 500)) = uchar(0);//刘海区域
 
 	vector<vector<Point>> contours_lackline;
 	Mat elementTest = getStructuringElement(MORPH_RECT, Size(11, 1));
@@ -2326,15 +2327,26 @@ bool lack_line(Mat white_yiwu, Mat ceguang, Mat Mask_MY, Mat* mresult, string *c
 					double longShortRatio = max(h / w, w / h);
 					//cout << "longShortRatio:" << longShortRatio << " SXPara->white_LongShortlowerth:" << SXPara->white_LongShortlowerth << " min(w, h):" << min(w, h) << " SXPara->white_LengthMinHighLimit:" << SXPara->white_LengthMinHighLimit << " max(w, h):" << max(w, h) << " SXPara->white_LengthMaxLowLimit:" << SXPara->white_LengthMaxLowLimit << endl;
 					int Line_Level_Length = 0;
+					int Line_Level_diff = 0;
 					if (Edge_Flag == 0)
 					{
 						Line_Level_Length = 200;
+						Line_Level_diff = 260;
 					}
 					else
 					{
 						Line_Level_Length = 550;
+						if (X_1 > 2750)
+						{
+							Line_Level_diff = 260;
+						}
+						else
+						{
+							Line_Level_diff = 150;
+						}
+						
 					}
-					if (longShortRatio >= 5 && min(w, h) < 30 && max(w, h) > Line_Level_Length)//长宽比，长度，宽度限制  8 40 250
+					if (longShortRatio >= 5 && min(w, h) < 30 && max(w, h) > Line_Level_Length && (Y_1 < Line_Level_diff || Y_2 > imageBinary.rows - 80))//长宽比，长度，宽度限制  8 40 250
 					{
 						int border = 3;//选定框边界宽度
 						int x_lt = X_1 - border;
