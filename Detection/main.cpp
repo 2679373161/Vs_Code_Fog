@@ -151,7 +151,7 @@ bool compareContourSizes(std::vector< cv::Point> contour1, std::vector< cv::Poin
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\膜划伤\\水平膜划伤2\\1245SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\RJ\\station\\20220514182\\24SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\彩底图_策略2检出的较淡少线\\69";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
-string rootPath = "D:\\Test_result\\V_SX\\34";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
+string rootPath = "D:\\Test_result\\V_SX\\35";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\V_LP\\_2\\station_白底马克笔\\20220514182\\504SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 
 //string rootPath = "D:\\test\\FOG\\SX\\少线漏检0712\\142_PB";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
