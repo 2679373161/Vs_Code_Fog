@@ -151,7 +151,7 @@ bool compareContourSizes(std::vector< cv::Point> contour1, std::vector< cv::Poin
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\膜划伤\\水平膜划伤2\\1245SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\RJ\\station\\20220514182\\24SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\彩底图_策略2检出的较淡少线\\69";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
-string rootPath = "D:\\Test_result\\V_SX\\35";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
+string rootPath = "D:\\Test_result\\V_SX\\34";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\V_LP\\_2\\station_白底马克笔\\20220514182\\504SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 
 //string rootPath = "D:\\test\\FOG\\SX\\少线漏检0712\\142_PB";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
@@ -2256,7 +2256,7 @@ bool lack_line(Mat white_yiwu, Mat ceguang, Mat Mask_MY, Mat* mresult, string *c
 	Mat elementTest_Level = getStructuringElement(MORPH_RECT, Size(1, 11));
 	morphologyEx(imageBinary_Level_line, imageBinary_Level_line, MORPH_CLOSE, elementTest_Level);
 	morphologyEx(imageBinary_Level_line, imageBinary_Level_line, MORPH_OPEN, elementTest_Level);
-	imageBinary_Level_line(Rect(imageBinary.cols - 120, 500, 120, 500)) = uchar(0);//刘海区域
+	
 
 	vector<vector<Point>> contours_lackline;
 	Mat elementTest = getStructuringElement(MORPH_RECT, Size(11, 1));
@@ -2313,14 +2313,34 @@ bool lack_line(Mat white_yiwu, Mat ceguang, Mat Mask_MY, Mat* mresult, string *c
 					if (w > h) {
 						continue;
 					}
+					//计算真实宽度
+					int hfact = 0;
+					if (w > 70 && h > 600)
+					{
+						int thl = h / 2;
+						for (int k = 0; k < w; k++) {
+							// 计算矩形中每列中白色像素的数量，从而确定真正高度
+							Rect rectTmp = Rect(X_1 + k, Y_1, 1, h);
+							int iWhiteNum = countNonZero(temp_mask(rectTmp));
+							if (iWhiteNum > thl) {
+								hfact++;
+							}
+						}
+						if (hfact < 35 && hfact > 0)
+						{
+							w = hfact;
+						}
+					}
 					//位置限定 排除易撕贴 刘海区域干扰
 					//区域划分 起始位置
 					bool Edge_Flag = 1;
-					if (X_1> 2750 && (Y_2< 550 || Y_1 > 1000))
+					Mat testce = ceguang(Rect(ceguang.cols - 160, 500, 160, 500)).clone();
+					double meanGrayce = mean(testce)[0];//26   130
+					if (X_1 > 2750 /*&& (Y_2< 550 || Y_1 > 1000)*/ && meanGrayce > 90)
 					{
-						Edge_Flag = 0; //位于头部刘海区域 
+						Edge_Flag = 0; //位于头部刘海区域
 					}
-					if ( (X_1 + w > 2750 && Y_1 + h < 300) || ( X_1 + w > 2850 && ( Y_1>500 && Y_2<1000)) || ( Y_1 > 250 && Edge_Flag))
+					if ((X_1 + w > 2750 && Y_1 + h < 300) || (X_1 + w > 2850 && (Y_1 > 500 && Y_2 < 1000) && h < 700) || (Y_1 > 250 && Edge_Flag))
 					{
 						continue;
 					}
@@ -2336,15 +2356,7 @@ bool lack_line(Mat white_yiwu, Mat ceguang, Mat Mask_MY, Mat* mresult, string *c
 					else
 					{
 						Line_Level_Length = 550;
-						if (X_1 > 2750)
-						{
-							Line_Level_diff = 260;
-						}
-						else
-						{
-							Line_Level_diff = 150;
-						}
-						
+						Line_Level_diff = 150;
 					}
 					if (longShortRatio >= 5 && min(w, h) < 30 && max(w, h) > Line_Level_Length && (Y_1 < Line_Level_diff || Y_2 > imageBinary.rows - 80))//长宽比，长度，宽度限制  8 40 250
 					{
