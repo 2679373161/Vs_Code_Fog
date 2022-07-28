@@ -150,7 +150,7 @@ bool compareContourSizes(std::vector< cv::Point> contour1, std::vector< cv::Poin
 
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\膜划伤\\水平膜划伤2\\1245SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\RJ\\station\\20220514182\\24SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
-//string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\彩底图_策略2检出的较淡少线\\69";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
+//string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\竖直方向少线\\";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 string rootPath = "D:\\Test_result\\V_SX\\34";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\V_LP\\_2\\station_白底马克笔\\20220514182\\504SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 
@@ -2444,6 +2444,25 @@ bool lack_line(Mat white_yiwu, Mat ceguang, Mat Mask_MY, Mat* mresult, string *c
 						double meanwhite_out = mean(white_defect, ~mask)[0];
 						double meanwhite_diff = meanwhite_in - meanwhite_out;
 
+						//特征参数计算 
+						Mat white_Feature = img_gray1(Rect(x_lt + 1, y_lt + 1, x_rt - x_lt - 2, y_rt - y_lt - 2));//白底疑似缺陷区域图像
+						double meanwhite_Feature = mean(img_gray1)[0];
+						double meanwhite_in_Feature = mean(white_Feature, mask)[0];
+						double meanwhite_out_Feature = mean(white_Feature, ~mask)[0];
+						double meanwhite_diff_Feature = (meanwhite_in_Feature - meanwhite_Feature)/ meanwhite_Feature;
+						int Area_Feature = 0; //缺陷面积大小
+						int Area_Back_Feature = 4500000; //背景面积大小
+						for (int i = 0; i < mask.cols; i++)
+						{
+							for (int j = 0; j < mask.rows; j++)
+							{
+								if (mask.at<uchar>(j, i) == 255)
+								{
+									Area_Feature++;
+								}
+							}
+						}
+						double Temp_Feature = (abs(meanwhite_diff_Feature) / (1.97 / pow(double(Area_Feature*4452) / Area_Back_Feature, 0.33) + 0.72))*100;
 						double removeScratchFlag;
 						if (area > 10000 && area < 20000)
 							removeScratchFlag = 8;//8
