@@ -91,6 +91,7 @@ Mat convertTo3Channels(const Mat& binImg);
 bool sortContoursLength(vector<cv::Point> contour1, vector<cv::Point> contour2);
 double CalcMHWScore(vector<int> scores);
 
+void GammaTransform(const Mat& srcImage, Mat& dstImage, double gamma);
 Mat f_remove_mark(Mat src, Mat ceguang);
 
 
@@ -151,8 +152,8 @@ bool compareContourSizes(std::vector< cv::Point> contour1, std::vector< cv::Poin
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\膜划伤\\水平膜划伤2\\1245SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\Test_result\\RJ\\station\\20220514182\\24SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\test\\FOG\\SX\\Standard_sample\\竖直方向少线\\";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
-string rootPath = "D:\\Test_result\\V_SX\\34";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
-//string rootPath = "D:\\Test_result\\V_LP\\_2\\station_白底马克笔\\20220514182\\504SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
+//string rootPath = "D:\\Test_result\\V_SX\\34";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
+string rootPath = "D:\\test\\FOG\\7_28_Line\\少线误检\\116SX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 
 //string rootPath = "D:\\test\\FOG\\SX\\少线漏检0712\\142_PB";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
 //string rootPath = "D:\\test\\FOG\\SX\\Marke\\7_4_sample\\6XYSX";//文件根目录  1\\2.8寸样本总览\\少线\\2.8寸少线\\2.8寸少线\\108SX_
@@ -297,11 +298,11 @@ int main()
 		t1 = GetTickCount(); //它返回从操作系统启动到当前所经过的毫秒数，常常用来判断某个方法执行的时间
 		Mat lacklineEenhance1 = gamma(mainfilter1, 0.5);//灰底用幂后的图像 0.8
 
-		//Mat End = f_remove_mark(whitefilter, src_ceguang);
+		Mat End = f_remove_mark(whitefilter, src_ceguang);
 
 		
 
-		flagW = lack_line(whitefilter, src_ceguang, src_ShieldMask_MY, &Mresult_1_white, &causeColor_1_white,Imgname);
+		//flagW = lack_line(whitefilter, src_ceguang, src_ShieldMask_MY, &Mresult_1_white, &causeColor_1_white,Imgname);
 		//flagR = lack_line_rgb(mainfilter, ceguang, &Mresult_1_white, &causeColor_1_white, Imgname);//加入少线缺陷判断
 		//lack_line_rgb_My(mainfilter, src_ceguang,src_rgb ,src_ShieldMask_MY , &Mresult_1_white, &causeColor_1_white, Imgname);
 		//flagB = lack_line_black(black_Gabor2, ceguang, &Mresult_1_white, &causeColor_1_white, Imgname);
@@ -1782,246 +1783,363 @@ Mat f_remove_Rcorner_bangs(Mat src)
 }
 Mat f_remove_mark(Mat src, Mat ceguang)
 {
-	uint8_t F_strategy = 1; //策略参数
-	Mat img_gray = src.clone();
-
 	Mat resultMat = Mat::zeros(src.rows, src.cols, CV_8UC1);                                  //生成空白掩膜图像
+	//侧光图获取马克笔轮廓 V0.1版本
+	bool Screen_Bangs_Flag = false;
+	Mat Img_White_Mark = src.clone();
+	Mat Img_Side_Mark = ceguang.clone();
 
-	Mat imageBinary = Mat::zeros(src.rows, src.cols, CV_8UC1);//分割二值图
-	// = Mat::zeros(src.rows, src.cols, CV_8UC1)
-	//掩膜处理去除刘海干扰
-	Mat th1 = Mat::zeros(src.rows, src.cols, CV_8UC1);
-	threshold(img_gray, th1, 20, 255, CV_THRESH_BINARY);
-
-	Mat structure_element2 = getStructuringElement(MORPH_RECT, Size(15, 15));
-	erode(th1, th1, structure_element2); //膨胀边界
-
-	bitwise_and(img_gray, th1, img_gray);
-
-
-	adaptiveThreshold(img_gray, imageBinary, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 51, 3);//lackline_bolckSize, lackline_delta
-
-	/*vector<int> X_list;
-	vector<int> Y_list;*/
-
-
-	imageBinary(Rect(imageBinary.cols - 250, 0, 250, 250)) = uchar(0);//去除易撕贴部分域
-	imageBinary(Rect(0, imageBinary.rows - 20, imageBinary.cols, 20)) = uchar(0);      //下边
-	imageBinary(Rect(0, 0, 40, imageBinary.rows - 1)) = uchar(0);                          //左边有误分割情况     40
-	imageBinary(Rect(imageBinary.cols - 40, 0, 40, imageBinary.rows - 1)) = uchar(0);      //右边
-
-	imageBinary = f_remove_Rcorner_bangs(imageBinary);
-
-	vector<vector<Point>> contours_lackline;
-
-	Mat structure_element_filter = (cv::Mat_<float>(11, 11) <<
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);//构建水平膨胀核 针对水平标注线
-
-	structure_element_filter.convertTo(structure_element_filter, CV_8UC1);
-	dilate(imageBinary, imageBinary, structure_element_filter);
-
-	erode(imageBinary, imageBinary, structure_element_filter);    //将模板腐蚀一下,为了去除边界影响,否则相与过后会有白边
-
-	findContours(imageBinary, contours_lackline, CV_RETR_LIST, CHAIN_APPROX_SIMPLE); //获得当前图像轮廓
-
-
-	Mat Marke_mask = Mat::zeros(imageBinary.rows, imageBinary.cols, CV_8UC1);                                  //生成空白掩膜图像
-
-
-	vector<Rect> boundRect_lackLine(contours_lackline.size());
+	Mat testce = Img_Side_Mark(Rect(Img_Side_Mark.cols - 160, 500, 160, 500)).clone();
+	double meanGrayce = mean(testce)[0];
+	if (meanGrayce > 90)
 	{
-		uint8_t Find_Flag = 0;
-
-		vector<double> Area_list_Find;
-		vector<float> W_list_Find;
-		vector<float> H_list_Find;
-		vector<int> X_list_Find;
-		vector<int> Y_list_Find;
-		vector<int> X_R_list_Find;
-		vector<int> Y_R_list_Find;
-
-		vector<double> Area_list_Maybe;
-		vector<float> W_list_Maybe;
-		vector<float> H_list_Maybe;
-		vector<int> X_list_Maybe;
-		vector<int> Y_list_Maybe;
-		vector<int> X_R_list_Maybe;
-		vector<int> Y_R_list_Maybe;
-		vector<unsigned long long> Index_Find;
-		vector<unsigned long long> Index_Maybe;
-		for (vector<int>::size_type i = 0; i < contours_lackline.size(); i++)
-		{
-			//RotatedRect rect = minAreaRect(contours_lackline[i]);  //包覆轮廓的最小斜矩形
-			//Point p = rect.center;
-			////按图片坐标系为准，左上角原点,上侧Y轴，左侧X轴
-			//X_list.push_back(p.y);
-			//Y_list.push_back(p.x);
-			double area = contourArea(contours_lackline[i]);
-			if (area > 300)
-			{
-				/*Mat temp_mask = Mat::zeros(imageBinary.rows, imageBinary.cols, CV_8UC1);
-				drawContours(temp_mask, contours_lackline, i, 255, FILLED, 8);*/
-				boundRect_lackLine[i] = boundingRect(Mat(contours_lackline[i]));
-				float w = boundRect_lackLine[i].width;
-				float h = boundRect_lackLine[i].height;
-				int X_1 = boundRect_lackLine[i].tl().x;//矩形左上角X坐标值
-				int Y_1 = boundRect_lackLine[i].tl().y;//矩形左上角Y坐标值
-				int X_2 = boundRect_lackLine[i].br().x;//矩形右下角X坐标值
-				int Y_2 = boundRect_lackLine[i].br().y;//矩形右下角Y坐标值
-
-				//求取偏心率
-				double long_axis = max(w, h) / 2;
-				double short_axis = min(w, h) / 2;
-				double Eccentricity = sqrt(1 - (short_axis*short_axis / (long_axis*long_axis)));
-				double longShortRatio = h / w;
-				double Area_Ratio = area / (h*w);
-				//求与X轴夹角
-				double Line_angle = atan(longShortRatio) * 180 / (3.1415926);
-
-				if (Eccentricity >= 0.95 && Line_angle <= 4.5 && w > 1000 && h > 20)
-				{
-
-					cv::drawContours(Marke_mask, contours_lackline, int(i), 255, FILLED, 8); //制作马克笔掩膜
-					Area_list_Find.push_back(area);
-
-					W_list_Find.push_back(w);
-					H_list_Find.push_back(h);
-					X_list_Find.push_back(X_1);
-					Y_list_Find.push_back(Y_1);
-					X_R_list_Find.push_back(X_2);
-					Y_R_list_Find.push_back(Y_2);
-					Index_Find.push_back(i);
-					Find_Flag = Find_Flag + 1;
-				}
-				else if (Eccentricity >= 0.95 && Line_angle >= 4.5 && Line_angle <= 10 && Area_Ratio < 0.45) {
-					Area_list_Maybe.push_back(area);
-					X_list_Maybe.push_back(X_1);
-					Y_list_Maybe.push_back(Y_1);
-					W_list_Maybe.push_back(w);
-					H_list_Maybe.push_back(h);
-					X_R_list_Maybe.push_back(X_2);
-					Y_R_list_Maybe.push_back(Y_2);
-					Index_Maybe.push_back(i);
-				}
-				else if (Eccentricity >= 0.95 && Line_angle <= 4.5) {
-					Area_list_Maybe.push_back(area);
-					X_list_Maybe.push_back(X_1);
-					Y_list_Maybe.push_back(Y_1);
-					W_list_Maybe.push_back(w);
-					H_list_Maybe.push_back(h);
-					X_R_list_Maybe.push_back(X_2);
-					Y_R_list_Maybe.push_back(Y_2);
-					Index_Maybe.push_back(i);
-				}
-				else {
-					continue;
-				}
-			}
-		}
-		if (F_strategy == 0) //策略1 修复
-		{
-			if (Find_Flag > 0)//二次遍历
-			{
-				uint8_t Sort_Num = Find_Flag;
-				if (Find_Flag == 1)
-				{
-					for (vector<int>::size_type Index = 0; Index < X_list_Maybe.size(); Index++)
-					{
-						if (abs(Y_list_Maybe[Index] - Y_list_Find[0]) < 50)//寻找与原曲线在同一范围内的标注线
-						{
-							cv::drawContours(Marke_mask, contours_lackline, int(Index_Maybe[Index]), 255, FILLED, 8); //制作马克笔掩膜
-							Area_list_Find.push_back(Area_list_Maybe[Index]);
-							W_list_Find.push_back(W_list_Maybe[Index]);
-							H_list_Find.push_back(H_list_Maybe[Index]);
-							X_list_Find.push_back(X_list_Maybe[Index]);
-							Y_list_Find.push_back(Y_list_Maybe[Index]);
-							X_R_list_Find.push_back(X_R_list_Maybe[Index]);
-							Y_R_list_Find.push_back(Y_R_list_Maybe[Index]);
-							Index_Find.push_back(Index_Maybe[Index]);
-							Find_Flag++;
-						}
-					}
-				}
-				else {
-					for (uint8_t Find_Num = 0; Find_Num < Sort_Num; Find_Num++)
-					{
-						for (vector<int>::size_type Index = 0; Index < X_list_Maybe.size(); Index++)
-						{
-							if (abs(Y_list_Maybe[Index] - Y_list_Find[Find_Num] - H_list_Find[Find_Num] / 2) < 50)//寻找与原曲线在同一范围内的标注线
-							{
-								cv::drawContours(Marke_mask, contours_lackline, int(Index_Maybe[Index]), 255, FILLED, 8); //制作马克笔掩膜
-								Area_list_Find.push_back(Area_list_Maybe[Index]);
-								W_list_Find.push_back(W_list_Maybe[Index]);
-								H_list_Find.push_back(H_list_Maybe[Index]);
-								X_list_Find.push_back(X_list_Maybe[Index]);
-								Y_list_Find.push_back(Y_list_Maybe[Index]);
-								X_R_list_Find.push_back(X_R_list_Maybe[Index]);
-								Y_R_list_Find.push_back(Y_R_list_Maybe[Index]);
-								Index_Find.push_back(Index_Maybe[Index]);
-								Find_Flag++;
-							}
-						}
-					}
-				}
-
-				Mat Marke_Inpaint_mask = Mat::zeros(imageBinary.rows, imageBinary.cols, CV_8UC1);                                  //生成空白掩膜图像
-
-				//resultMat = Marke_mask.clone(); //修复前的二值图像
-
-				bitwise_and(Marke_mask, img_gray, Marke_Inpaint_mask);
-
-				Mat structure_element_Marke_Inpaint = getStructuringElement(MORPH_RECT, Size(5, 5));
-				dilate(Marke_Inpaint_mask, Marke_Inpaint_mask, structure_element_Marke_Inpaint);
-
-				//cv::imwrite("save.bmp", Marke_Inpaint_mask);
-				Mat imgInpaint;
-				cv::inpaint(img_gray, Marke_Inpaint_mask, imgInpaint, 5,INPAINT_NS); // 修复策略1
-
-				inpaint(img_gray, Marke_Inpaint_mask, imgInpaint, 5, INPAINT_TELEA);// 修复策略2 测试该效果更好一些
-				resultMat = imgInpaint.clone(); //修复后的灰度图像
-			}
-			else {
-
-				resultMat = Mat::zeros(src.rows, src.cols, CV_8UC1);                                  //生成空白掩膜图像
-			}
-		}
-		else { //策略2 给出区域不修复
-
-			if (Find_Flag > 0)//二次遍历
-			{
-				if (Find_Flag == 1)
-				{
-					resultMat(Rect(0, Y_list_Find[0], src.cols, int(H_list_Find[0]))) = uchar(255);
-				}
-				else {
-					int Min_num_L = *min_element(Y_list_Find.begin(), Y_list_Find.end()); //获取最小值
-					int Min_num_L_2 = *min_element(Y_R_list_Find.begin(), Y_R_list_Find.end()); //获取最小值
-
-					int Max_num_L = *max_element(Y_list_Find.begin(), Y_list_Find.end()); //获取最大值
-					int Max_num_L_2 = *max_element(Y_R_list_Find.begin(), Y_R_list_Find.end()); //获取最大值
-
-					resultMat(Rect(0, min(Min_num_L, Min_num_L_2), src.cols, max(Max_num_L, Max_num_L_2) - min(Min_num_L, Min_num_L_2))) = uchar(255);
-				}
-			}
-			else {
-
-				resultMat = Mat::zeros(src.rows, src.cols, CV_8UC1);                                  //生成空白掩膜图像
-
-			}
-		}
-
+		Screen_Bangs_Flag = true;
 	}
+	
+	//Laplace 增强
+	Mat kernel = (Mat_<float>(3, 3) << 0, -1, 0, 0, 5, 0, 0, -1, 0);
+	filter2D(Img_Side_Mark, Img_Side_Mark, CV_8UC1, kernel); //突出垂直线
+	//伽马校正
+	//GammaTransform(Img_Side_Mark, Img_Side_Mark, 2);
 
+	Mat Img_Side_Mark_TH;
+	adaptiveThreshold(Img_Side_Mark, Img_Side_Mark_TH, 255, ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 31, 3);//lackline_bolckSize, lackline_delta
+
+	Mat struct1 = getStructuringElement(0, Size(7, 7));  //矩形结构元素
+	erode(Img_Side_Mark_TH, Img_Side_Mark_TH, struct1);	//腐蚀 减少噪声
+	dilate(Img_Side_Mark_TH, Img_Side_Mark_TH, struct1);//膨胀 还原
+
+	Mat elementTest_Level = getStructuringElement(MORPH_RECT, Size(11, 1));//竖直方向筛选
+	morphologyEx(Img_Side_Mark_TH, Img_Side_Mark_TH, MORPH_CLOSE, elementTest_Level);
+	morphologyEx(Img_Side_Mark_TH, Img_Side_Mark_TH, MORPH_OPEN, elementTest_Level);
+	dilate(Img_Side_Mark_TH, Img_Side_Mark_TH, elementTest_Level);
+	//判断屏幕类型 用于排除刘海
+	if(Screen_Bangs_Flag = true)
+	{ 
+		Img_Side_Mark_TH(Rect(Img_Side_Mark_TH.cols - 115, 510, 115, 490)) = uchar(0);      //刘海
+	}
+	Img_Side_Mark_TH(Rect(0, 0, 15, Img_Side_Mark_TH.rows)) = uchar(0);      //下边缘
+
+	Mat Marke_Side_Mask = Mat::zeros(Img_Side_Mark_TH.rows, Img_Side_Mark_TH.cols, CV_8UC1);                                  //生成空白掩膜图像
+
+	vector<vector<Point>> contours_Side_Mask;
+	findContours(Img_Side_Mark_TH, contours_Side_Mask, CV_RETR_LIST, CHAIN_APPROX_SIMPLE); //获得当前图像轮廓
+
+	sort(contours_Side_Mask.begin(), contours_Side_Mask.end(), compareContourAreas);
+
+	vector<Rect> boundRect_Side_Mark(contours_Side_Mask.size()); //垂直方向马克笔
+	{
+		for (vector<int>::size_type i = 0; i < contours_Side_Mask.size(); i++)
+		{
+			//划分为两类 一类长 一类短 
+			//短的用于拼接 暂定
+			boundRect_Side_Mark[i] = boundingRect(contours_Side_Mask[i]);  //外接正矩形
+
+			float w = boundRect_Side_Mark[i].width;
+			float h = boundRect_Side_Mark[i].height;
+			int X_1 = boundRect_Side_Mark[i].tl().x;//矩形左上角X坐标值
+			int Y_1 = boundRect_Side_Mark[i].tl().y;//矩形左上角Y坐标值
+			int X_2 = boundRect_Side_Mark[i].br().x;//矩形右下角X坐标值
+			int Y_2 = boundRect_Side_Mark[i].br().y;//矩形右下角Y坐标值
+
+			if (Y_1 < 10 || Y_2 > 1490 || w < h) 
+			{
+				continue; //垂直方向 距离上下边界为10的轮廓
+			}
+			// 区域提取
+			Mat temp_mask = Mat::zeros(Img_Side_Mark_TH.rows, Img_Side_Mark_TH.cols, CV_8UC1);
+			drawContours(temp_mask, contours_Side_Mask, i, 255, FILLED, 8);
+
+			double area = contourArea(contours_Side_Mask[i]);
+
+			if (area>6000) //长且明显的马克笔轮廓
+			{
+				//特征1 长宽比
+				double longShortRatio = w / h;
+				
+				if (longShortRatio > 20 && w > 1000) //垂直马克笔大于屏幕的1/3
+				{
+					int border = 3;//选定框边界宽度
+					int x_lt = X_1 - border;
+					//越界保护
+					if (x_lt < 0)
+					{
+						x_lt = 0;
+					}
+					int y_lt = Y_1 - border;
+					if (y_lt < 0)
+					{
+						y_lt = 0;
+					}
+					int x_rt = X_2 + border;
+					if (x_rt > ceguang.size[1] - 1)
+					{
+						x_rt = ceguang.size[1] - 1;
+					}
+					int y_rt = Y_2 + border;
+					if (y_rt > ceguang.size[0] - 1)
+					{
+						y_rt = ceguang.size[0] - 1;
+					}
+					Mat Marke_Side = ceguang(Rect(x_lt + 1, y_lt + 1, x_rt - x_lt - 2, y_rt - y_lt - 2)).clone();//侧光图像疑似贴膜划痕图像
+					Mat Marke_White = src(Rect(x_lt + 1, y_lt + 1, x_rt - x_lt - 2, y_rt - y_lt - 2)).clone();//侧光图像疑似贴膜划痕图像
+					Mat mask = temp_mask(Rect(x_lt + 1, y_lt + 1, x_rt - x_lt - 2, y_rt - y_lt - 2));             //侧光图像疑似贴膜划痕掩膜
+
+					double mean_Side_in = mean(Marke_Side, mask)[0];
+					double mean_Side_out = mean(Marke_Side, ~mask)[0];
+					double mean_White_in = mean(Marke_White, mask)[0];
+					double mean_White_out = mean(Marke_White, ~mask)[0];
+					double mean_Side_diff = mean_Side_in - mean_Side_out;
+					double mean_White_diff = mean_White_in - mean_White_out;
+					if (mean_Side_diff > 25 && mean_White_diff< 0)//灰度差大于一定范围
+					{
+						resultMat(Rect(0, Y_1, src.cols, h)) = uchar(255);
+					}
+				}
+			}
+		}
+	}
+	//
+	//uint8_t F_strategy = 1; //策略参数
+	//Mat img_gray = src.clone();
+
+	////Mat resultMat = Mat::zeros(src.rows, src.cols, CV_8UC1);                                  //生成空白掩膜图像
+
+	//Mat imageBinary = Mat::zeros(src.rows, src.cols, CV_8UC1);//分割二值图
+	//// = Mat::zeros(src.rows, src.cols, CV_8UC1)
+	////掩膜处理去除刘海干扰
+	//Mat th1 = Mat::zeros(src.rows, src.cols, CV_8UC1);
+	//threshold(img_gray, th1, 20, 255, CV_THRESH_BINARY);
+
+	//Mat structure_element2 = getStructuringElement(MORPH_RECT, Size(15, 15));
+	//erode(th1, th1, structure_element2); //膨胀边界
+
+	//bitwise_and(img_gray, th1, img_gray);
+
+
+	//adaptiveThreshold(img_gray, imageBinary, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 51, 3);//lackline_bolckSize, lackline_delta
+
+	///*vector<int> X_list;
+	//vector<int> Y_list;*/
+
+
+	//imageBinary(Rect(imageBinary.cols - 250, 0, 250, 250)) = uchar(0);//去除易撕贴部分域
+	//imageBinary(Rect(0, imageBinary.rows - 20, imageBinary.cols, 20)) = uchar(0);      //下边
+	//imageBinary(Rect(0, 0, 40, imageBinary.rows - 1)) = uchar(0);                          //左边有误分割情况     40
+	//imageBinary(Rect(imageBinary.cols - 40, 0, 40, imageBinary.rows - 1)) = uchar(0);      //右边
+
+	//imageBinary = f_remove_Rcorner_bangs(imageBinary);
+
+	//vector<vector<Point>> contours_lackline;
+
+	//Mat structure_element_filter = (cv::Mat_<float>(11, 11) <<
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	//	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);//构建水平膨胀核 针对水平标注线
+
+	//structure_element_filter.convertTo(structure_element_filter, CV_8UC1);
+	//dilate(imageBinary, imageBinary, structure_element_filter);
+
+	//erode(imageBinary, imageBinary, structure_element_filter);    //将模板腐蚀一下,为了去除边界影响,否则相与过后会有白边
+
+	//findContours(imageBinary, contours_lackline, CV_RETR_LIST, CHAIN_APPROX_SIMPLE); //获得当前图像轮廓
+
+
+	//Mat Marke_mask = Mat::zeros(imageBinary.rows, imageBinary.cols, CV_8UC1);                                  //生成空白掩膜图像
+
+
+	//vector<Rect> boundRect_lackLine(contours_lackline.size());
+	//{
+	//	uint8_t Find_Flag = 0;
+
+	//	vector<double> Area_list_Find;
+	//	vector<float> W_list_Find;
+	//	vector<float> H_list_Find;
+	//	vector<int> X_list_Find;
+	//	vector<int> Y_list_Find;
+	//	vector<int> X_R_list_Find;
+	//	vector<int> Y_R_list_Find;
+
+	//	vector<double> Area_list_Maybe;
+	//	vector<float> W_list_Maybe;
+	//	vector<float> H_list_Maybe;
+	//	vector<int> X_list_Maybe;
+	//	vector<int> Y_list_Maybe;
+	//	vector<int> X_R_list_Maybe;
+	//	vector<int> Y_R_list_Maybe;
+	//	vector<unsigned long long> Index_Find;
+	//	vector<unsigned long long> Index_Maybe;
+	//	for (vector<int>::size_type i = 0; i < contours_lackline.size(); i++)
+	//	{
+	//		//RotatedRect rect = minAreaRect(contours_lackline[i]);  //包覆轮廓的最小斜矩形
+	//		//Point p = rect.center;
+	//		////按图片坐标系为准，左上角原点,上侧Y轴，左侧X轴
+	//		//X_list.push_back(p.y);
+	//		//Y_list.push_back(p.x);
+	//		double area = contourArea(contours_lackline[i]);
+	//		if (area > 300)
+	//		{
+	//			/*Mat temp_mask = Mat::zeros(imageBinary.rows, imageBinary.cols, CV_8UC1);
+	//			drawContours(temp_mask, contours_lackline, i, 255, FILLED, 8);*/
+	//			boundRect_lackLine[i] = boundingRect(Mat(contours_lackline[i]));
+	//			float w = boundRect_lackLine[i].width;
+	//			float h = boundRect_lackLine[i].height;
+	//			int X_1 = boundRect_lackLine[i].tl().x;//矩形左上角X坐标值
+	//			int Y_1 = boundRect_lackLine[i].tl().y;//矩形左上角Y坐标值
+	//			int X_2 = boundRect_lackLine[i].br().x;//矩形右下角X坐标值
+	//			int Y_2 = boundRect_lackLine[i].br().y;//矩形右下角Y坐标值
+
+	//			//求取偏心率
+	//			double long_axis = max(w, h) / 2;
+	//			double short_axis = min(w, h) / 2;
+	//			double Eccentricity = sqrt(1 - (short_axis*short_axis / (long_axis*long_axis)));
+	//			double longShortRatio = h / w;
+	//			double Area_Ratio = area / (h*w);
+	//			//求与X轴夹角
+	//			double Line_angle = atan(longShortRatio) * 180 / (3.1415926);
+
+	//			if (Eccentricity >= 0.95 && Line_angle <= 4.5 && w > 1000 && h > 20)
+	//			{
+
+	//				cv::drawContours(Marke_mask, contours_lackline, int(i), 255, FILLED, 8); //制作马克笔掩膜
+	//				Area_list_Find.push_back(area);
+
+	//				W_list_Find.push_back(w);
+	//				H_list_Find.push_back(h);
+	//				X_list_Find.push_back(X_1);
+	//				Y_list_Find.push_back(Y_1);
+	//				X_R_list_Find.push_back(X_2);
+	//				Y_R_list_Find.push_back(Y_2);
+	//				Index_Find.push_back(i);
+	//				Find_Flag = Find_Flag + 1;
+	//			}
+	//			else if (Eccentricity >= 0.95 && Line_angle >= 4.5 && Line_angle <= 10 && Area_Ratio < 0.45) {
+	//				Area_list_Maybe.push_back(area);
+	//				X_list_Maybe.push_back(X_1);
+	//				Y_list_Maybe.push_back(Y_1);
+	//				W_list_Maybe.push_back(w);
+	//				H_list_Maybe.push_back(h);
+	//				X_R_list_Maybe.push_back(X_2);
+	//				Y_R_list_Maybe.push_back(Y_2);
+	//				Index_Maybe.push_back(i);
+	//			}
+	//			else if (Eccentricity >= 0.95 && Line_angle <= 4.5) {
+	//				Area_list_Maybe.push_back(area);
+	//				X_list_Maybe.push_back(X_1);
+	//				Y_list_Maybe.push_back(Y_1);
+	//				W_list_Maybe.push_back(w);
+	//				H_list_Maybe.push_back(h);
+	//				X_R_list_Maybe.push_back(X_2);
+	//				Y_R_list_Maybe.push_back(Y_2);
+	//				Index_Maybe.push_back(i);
+	//			}
+	//			else {
+	//				continue;
+	//			}
+	//		}
+	//	}
+	//	if (F_strategy == 0) //策略1 修复
+	//	{
+	//		if (Find_Flag > 0)//二次遍历
+	//		{
+	//			uint8_t Sort_Num = Find_Flag;
+	//			if (Find_Flag == 1)
+	//			{
+	//				for (vector<int>::size_type Index = 0; Index < X_list_Maybe.size(); Index++)
+	//				{
+	//					if (abs(Y_list_Maybe[Index] - Y_list_Find[0]) < 50)//寻找与原曲线在同一范围内的标注线
+	//					{
+	//						cv::drawContours(Marke_mask, contours_lackline, int(Index_Maybe[Index]), 255, FILLED, 8); //制作马克笔掩膜
+	//						Area_list_Find.push_back(Area_list_Maybe[Index]);
+	//						W_list_Find.push_back(W_list_Maybe[Index]);
+	//						H_list_Find.push_back(H_list_Maybe[Index]);
+	//						X_list_Find.push_back(X_list_Maybe[Index]);
+	//						Y_list_Find.push_back(Y_list_Maybe[Index]);
+	//						X_R_list_Find.push_back(X_R_list_Maybe[Index]);
+	//						Y_R_list_Find.push_back(Y_R_list_Maybe[Index]);
+	//						Index_Find.push_back(Index_Maybe[Index]);
+	//						Find_Flag++;
+	//					}
+	//				}
+	//			}
+	//			else {
+	//				for (uint8_t Find_Num = 0; Find_Num < Sort_Num; Find_Num++)
+	//				{
+	//					for (vector<int>::size_type Index = 0; Index < X_list_Maybe.size(); Index++)
+	//					{
+	//						if (abs(Y_list_Maybe[Index] - Y_list_Find[Find_Num] - H_list_Find[Find_Num] / 2) < 50)//寻找与原曲线在同一范围内的标注线
+	//						{
+	//							cv::drawContours(Marke_mask, contours_lackline, int(Index_Maybe[Index]), 255, FILLED, 8); //制作马克笔掩膜
+	//							Area_list_Find.push_back(Area_list_Maybe[Index]);
+	//							W_list_Find.push_back(W_list_Maybe[Index]);
+	//							H_list_Find.push_back(H_list_Maybe[Index]);
+	//							X_list_Find.push_back(X_list_Maybe[Index]);
+	//							Y_list_Find.push_back(Y_list_Maybe[Index]);
+	//							X_R_list_Find.push_back(X_R_list_Maybe[Index]);
+	//							Y_R_list_Find.push_back(Y_R_list_Maybe[Index]);
+	//							Index_Find.push_back(Index_Maybe[Index]);
+	//							Find_Flag++;
+	//						}
+	//					}
+	//				}
+	//			}
+
+	//			Mat Marke_Inpaint_mask = Mat::zeros(imageBinary.rows, imageBinary.cols, CV_8UC1);                                  //生成空白掩膜图像
+
+	//			//resultMat = Marke_mask.clone(); //修复前的二值图像
+
+	//			bitwise_and(Marke_mask, img_gray, Marke_Inpaint_mask);
+
+	//			Mat structure_element_Marke_Inpaint = getStructuringElement(MORPH_RECT, Size(5, 5));
+	//			dilate(Marke_Inpaint_mask, Marke_Inpaint_mask, structure_element_Marke_Inpaint);
+
+	//			//cv::imwrite("save.bmp", Marke_Inpaint_mask);
+	//			Mat imgInpaint;
+	//			cv::inpaint(img_gray, Marke_Inpaint_mask, imgInpaint, 5,INPAINT_NS); // 修复策略1
+
+	//			inpaint(img_gray, Marke_Inpaint_mask, imgInpaint, 5, INPAINT_TELEA);// 修复策略2 测试该效果更好一些
+	//			resultMat = imgInpaint.clone(); //修复后的灰度图像
+	//		}
+	//		else {
+
+	//			resultMat = Mat::zeros(src.rows, src.cols, CV_8UC1);                                  //生成空白掩膜图像
+	//		}
+	//	}
+	//	else { //策略2 给出区域不修复
+
+	//		if (Find_Flag > 0)//二次遍历
+	//		{
+	//			if (Find_Flag == 1)
+	//			{
+	//				resultMat(Rect(0, Y_list_Find[0], src.cols, int(H_list_Find[0]))) = uchar(255);
+	//			}
+	//			else {
+	//				int Min_num_L = *min_element(Y_list_Find.begin(), Y_list_Find.end()); //获取最小值
+	//				int Min_num_L_2 = *min_element(Y_R_list_Find.begin(), Y_R_list_Find.end()); //获取最小值
+
+	//				int Max_num_L = *max_element(Y_list_Find.begin(), Y_list_Find.end()); //获取最大值
+	//				int Max_num_L_2 = *max_element(Y_R_list_Find.begin(), Y_R_list_Find.end()); //获取最大值
+
+	//				resultMat(Rect(0, min(Min_num_L, Min_num_L_2), src.cols, max(Max_num_L, Max_num_L_2) - min(Min_num_L, Min_num_L_2))) = uchar(255);
+	//			}
+	//		}
+	//		else {
+
+	//			resultMat = Mat::zeros(src.rows, src.cols, CV_8UC1);                                  //生成空白掩膜图像
+
+	//		}
+	//	}
+
+	//}
+	resultMat = ~resultMat;
 	return resultMat;
 }
 
@@ -4895,6 +5013,45 @@ Mat gamma(Mat src, double g)
 	return dst;
 }
 
+void GammaTransform(const Mat& srcImage, Mat& dstImage, double gamma)
+{
+	unsigned char lut[256];
+	for (int i = 0; i < 256; i++)
+	{
+		lut[i] = saturate_cast<uchar>(pow((float)i / 255.0, gamma) * 255.0f);
+	}
+	dstImage = srcImage.clone();
+	int channels = srcImage.channels();
+	switch (channels)
+	{
+	case 1:
+	{
+		MatIterator_<uchar> it = dstImage.begin<uchar>();
+		MatIterator_<uchar> end = dstImage.end<uchar>();
+		while (it != end)
+		{
+			*it = lut[(*it)];
+			it++;
+		}
+		break;
+	}
+	case 3:
+	{
+		MatIterator_<Vec3b> it = dstImage.begin<Vec3b>();
+		MatIterator_<Vec3b> end = dstImage.end<Vec3b>();
+		while (it != end)
+		{
+			(*it)[0] = lut[(*it)[0]];
+			(*it)[1] = lut[(*it)[1]];
+			(*it)[2] = lut[(*it)[2]];
+			it++;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
 
 
 
