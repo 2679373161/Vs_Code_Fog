@@ -33,3 +33,6 @@
 
 build/
 .vscode/
+.vs/
+x64/
+Detection/x64
